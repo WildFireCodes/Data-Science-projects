@@ -9,6 +9,7 @@ class LinearRegression:
 
     def fit(self, X_train, y_train):
         n = X_train.shape[1]
+        self.slope = np.zeros(n)
 
         for _ in range(self.n_iterations):
             self.slope -= self.n_learning_rate * (-2/n) * self.calc_slope(X_train.T, y_train)
@@ -21,10 +22,12 @@ class LinearRegression:
         return np.sum(y - self.regression(X))
 
     def calc_slope(self, X, y):
-        return np.sum(X * (y - self.regression(X)))
-    
+        # return np.sum(X * (y - self.regression(X)))
+        return np.dot(X, (y - self.regression(X)))
+
     def regression(self, X):
-        return self.slope * X + self.bias
+        # return self.slope * X + self.bias
+        return np.dot(self.slope, (X + self.bias))
 
 
     
