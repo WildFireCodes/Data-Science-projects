@@ -16,40 +16,40 @@ class Layer:
         raise NotImplementedError
         
 class Activation(Layer):
-    def __init__(self, activation_function, activation_function_derivative):
+    def __init__(self, activation_function):
         self.activation_function = activation_function
-        self.activation_function_derivative = activation_function_derivative
     
     def forward_propagation(self, x):
         self.x = x
-        self.output = self.activation_function(x)
+        self.output = self.activation_function.activation(x)
 
         return self.output
 
     def backward_propagation(self, output_error, learning_rate):
-        return output_error * self.activation_function_derivative(self.x)
+        return output_error * self.activation_function.activation_derivative(self.x)
 
 class Dense(Layer):
     def __init__(self, n_input, n_output):
         '''n_input = number of neurons in the first layer
            n_output = number of neurons in the last layer'''
-        if n_input == 0 or n_output == 0:
-            raise ValueError
+        # if n_input == 0 or n_output == 0:
+        #     raise ValueError
 
-        self.weight = np.random.rand(n_input, n_output)
-        self.bias = np.random(1, n_output)
+        self.weight = np.random.randn(n_input, n_output) * np.sqrt(2 / n_input)
+        self.bias = np.random.randn(1, n_output)
     
     def forward_propagation(self, x):
         self.x = x
         self.output = np.dot(self.x, self.weight) + self.bias
-
+        
         return self.output
 
     def backward_propagation(self, output_error, learning_rate):
         calculated_weights_error = np.dot(self.x.T, output_error)
+        gradient = np.dot(output_error, self.weight.T)
 
         self.weight -= learning_rate * calculated_weights_error
         self.bias -= learning_rate * output_error
 
-        return np.dot(output_error, self.weight.T)
+        return gradient
     
